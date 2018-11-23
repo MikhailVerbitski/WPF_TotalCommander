@@ -82,9 +82,6 @@ namespace TotalCommander.ViewModel
             }
         }
         private Brush notificationBackground;
-        
-
-        public Action<object, KeyEventArgs> KeyDown;
         public Action<object, SizeChangedEventArgs> WindowSizeChange;
     }
 }

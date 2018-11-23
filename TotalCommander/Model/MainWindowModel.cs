@@ -22,10 +22,10 @@ namespace TotalCommander.Model
         {
             this.ViewModel = ViewModel;
             ViewModel.KeyButtons = new Tuple<Model.Command, string>[] {
-                new Tuple<Model.Command, string>(new Model.Command(Model.FileBrowserManagers.Copy), "F1 - Копировать"),
-                new Tuple<Model.Command, string>(new Model.Command(Model.FileBrowserManagers.Transfer), "F2 - Вырезать"),
-                new Tuple<Model.Command, string>(new Model.Command(Model.FileBrowserManagers.PasteAsync), "F3 - Вставить"),
-                new Tuple<Model.Command, string>(new Model.Command(Model.FileBrowserManagers.Delete), "F4 - Удалить")
+                new Tuple<Model.Command, string>(new Model.Command(Model.FileBrowserManagers.Copy), "Копировать"),
+                new Tuple<Model.Command, string>(new Model.Command(Model.FileBrowserManagers.Transfer), "Вырезать"),
+                new Tuple<Model.Command, string>(new Model.Command(Model.FileBrowserManagers.PasteAsync), "Вставить"),
+                new Tuple<Model.Command, string>(new Model.Command(Model.FileBrowserManagers.Delete), "Удалить")
             };
             ViewModel.WindowSizeChange = WindowSizeChange;
 
@@ -35,7 +35,6 @@ namespace TotalCommander.Model
                 new Tuple<Model.Command, string>(new Command(RemoveFileBrowser), "-"),
                 new Tuple<Model.Command, string>(new Command(AddFileBrowser), "+")
             };
-            ViewModel.KeyDown = KeyDown;
         }
         private ViewModel.MainWindowViewModel ViewModel;
 
@@ -67,13 +66,9 @@ namespace TotalCommander.Model
         public void WindowSizeChange(object sender, SizeChangedEventArgs e)
         {
             foreach (var i in ViewModel.FileBrowsers)
+            {
                 i.Width = (e.NewSize.Width / ViewModel.FileBrowsers.Length);
-        }
-        public void KeyDown(object sender, KeyEventArgs e)
-        {
-            int Key = Convert.ToInt16(e.Key);
-            if (Key > 89 && Key < 94)
-                ViewModel.KeyButtons[Key - 90].Item1.execute(new object());
+            }
         }
     }
 }

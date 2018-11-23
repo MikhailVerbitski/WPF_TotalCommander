@@ -25,10 +25,10 @@ namespace TotalCommander.Model
             Managercs.Add(this);
 
             ViewModel.ComboBoxItems = DriveInfo.GetDrives().Where(a => a.IsReady == true).ToArray();
-            ViewModel.SelectedDrive = ViewModel.ComboBoxItems[0];
-            CurrentDirectory = new DirectoryInfo(ViewModel.ComboBoxItems[0].Name);
+            ViewModel.SelectedDrive = ViewModel.ComboBoxItems.First();
+            CurrentDirectory = new DirectoryInfo(ViewModel.ComboBoxItems.First().Name);
             ViewModel.Linq = CurrentDirectory.FullName;
-            ViewModel.ListItems = TotalCommander.Model.Item.GetItems(new DirectoryInfo(ViewModel.SelectedDrive.Name));
+            ViewModel.ListItems = Item.GetItems(new DirectoryInfo(ViewModel.SelectedDrive.Name));
 
             ViewModel.Selected = Selected;
             ViewModel.DoubleClick = DoubleClick;
@@ -41,7 +41,7 @@ namespace TotalCommander.Model
         {
             ViewModel.ListItems = Item.GetItems(new DirectoryInfo(((sender as ComboBox).SelectedItem as DriveInfo).Name));
             var drive = (sender as ComboBox).SelectedItem as DriveInfo;
-            ViewModel.TextNearComboBox = AdapterNumber.ToAdaptNumber(drive.TotalFreeSpace) + " из " + AdapterNumber.ToAdaptNumber(drive.TotalSize) + "байт";
+            ViewModel.TextNearComboBox = $"{AdapterNumber.ToAdaptNumber(drive.TotalFreeSpace / 1024 / 1024)}Mбайт из {AdapterNumber.ToAdaptNumber(drive.TotalSize / 1024 / 1024)}Mбайт";
             ViewModel.Linq = drive.Name;
             CurrentDirectory = new DirectoryInfo(drive.Name);
         }
@@ -105,64 +105,73 @@ namespace TotalCommander.Model
         public static async void PasteAsync(object obj)
         {
             var result = await Task.Factory.StartNew<bool>(() => Paste(obj));
+            if (result == true)
+            {
+                Alert.Call("Операция завершена успешно", Colors.Green);
+            }
         }
         public static bool Paste(object obj)
         {
             if (SelectedFileBrowserManagers.BufSelectedItems.Count > 1 || SelectedFileBrowserManagers.BufSelectedItems.Count == 0)
             {
                 Alert.Call("Выбирите одну папку", Colors.Red);
+                return false;
             }
-            else
+            DirectoryInfo destination = (SelectedFileBrowserManagers.BufSelectedItems.Count == 0) 
+                ? destination = SelectedFileBrowserManagers.CurrentDirectory
+                : destination = SelectedFileBrowserManagers.BufSelectedItems.Single().info as DirectoryInfo;
+            if(SelectedFileBrowserManagers.BufSelectedItems.Single().info is FileInfo)
             {
-                DirectoryInfo destination = (SelectedFileBrowserManagers.BufSelectedItems.Count == 0) 
-                    ? destination = SelectedFileBrowserManagers.CurrentDirectory
-                    : destination = SelectedFileBrowserManagers.BufSelectedItems.Single().info as DirectoryInfo;
-                if(SelectedFileBrowserManagers.BufSelectedItems.Single().info is FileInfo)
-                {
-                    var str = SelectedFileBrowserManagers.BufSelectedItems.Single().info.FullName.Split('\\');
-                    Array.Resize(ref str, str.Length - 1);
-                    destination = new DirectoryInfo(string.Concat(str));
-                }
+                var str = SelectedFileBrowserManagers.BufSelectedItems.Single().info.FullName.Split('\\');
+                Array.Resize(ref str, str.Length - 1);
+                destination = new DirectoryInfo(string.Concat(str));
+            }
                 
-                string SoursStr = destination.FullName;
-                var buf = SelectedItems.Select(b => new Tuple<FileSystemInfo, StringBuilder>(b, new StringBuilder(b.FullName))).ToArray();
+            string SoursStr = destination.FullName;
+            var buf = SelectedItems.Select(b => new Tuple<FileSystemInfo, StringBuilder>(b, new StringBuilder(b.FullName))).ToArray();
 
-                var Linqs = buf.Select(a => a.Item1.FullName.Split('\\').ToList()).ToList();
-                while(Linqs.All(a => a.Count != 0) && Linqs.All(a => a.Count > 1))
-                    if (Linqs.All(a => a[0] == Linqs.First()[0]))
-                        foreach (var i in Linqs)
-                            i.RemoveAt(0);
-                    else
-                        break;
-                for (int i = 0; i < Linqs.Count; i++)
-                    buf[i].Item2.Replace(buf[i].Item2.ToString(), destination.FullName + '\\' + Linqs[i].Aggregate((a, b) => a + '\\' + b));
+            var Linqs = buf.Select(a => a.Item1.FullName.Split('\\').ToList()).ToList();
+            while(Linqs.All(a => a.Count != 0) && Linqs.All(a => a.Count > 1))
+                if (Linqs.All(a => a[0] == Linqs.First()[0]))
+                    foreach (var i in Linqs)
+                        i.RemoveAt(0);
+                else
+                    break;
+            for (int i = 0; i < Linqs.Count; i++)
+                buf[i].Item2.Replace(buf[i].Item2.ToString(), destination.FullName + '\\' + Linqs[i].Aggregate((a, b) => a + '\\' + b));
 
-                foreach (var i in buf)
-                    i.Item2.Replace(i.Item2.ToString(), CreateAvailableName(i.Item2.ToString(), i.Item1 is FileInfo));
-                try
+            foreach (var i in buf)
+                i.Item2.Replace(i.Item2.ToString(), CreateAvailableName(i.Item2.ToString(), i.Item1 is FileInfo));
+            try
+            {
+                if (CopyOrTransfer)
                 {
-                    if (CopyOrTransfer)
-                    {
-                        foreach (var i in buf.OrderBy(b => b.Item2.Length))
-                            if (i.Item1 is DirectoryInfo)
-                                Directory.CreateDirectory(i.Item2.ToString());
-                            else if (i.Item1.FullName != i.Item2.ToString())
-                                (i.Item1 as FileInfo).CopyTo(i.Item2.ToString());
-                    }
-                    else
-                    {
-                        foreach (var i in buf.Where(a => a.Item1 is DirectoryInfo).OrderBy(b => b.Item2.Length))
+                    foreach (var i in buf.OrderBy(b => b.Item2.Length))
+                        if (i.Item1 is DirectoryInfo)
                             Directory.CreateDirectory(i.Item2.ToString());
-                        foreach (var i in buf.Where(a => a.Item1 is FileInfo).OrderBy(a => -a.Item2.Length))
-                            (i.Item1 as FileInfo).MoveTo(i.Item2.ToString());
-                    }
+                        else if (i.Item1.FullName != i.Item2.ToString())
+                            (i.Item1 as FileInfo).CopyTo(i.Item2.ToString());
                 }
-                catch(Exception ex)
+                else
                 {
-                    Alert.Call(ex.Message, Colors.Red);
+                    foreach (var i in buf.Where(a => a.Item1 is DirectoryInfo).OrderBy(b => b.Item2.Length))
+                        Directory.CreateDirectory(i.Item2.ToString());
+                    foreach (var i in buf.Where(a => a.Item1 is FileInfo).OrderBy(a => -a.Item2.Length))
+                        (i.Item1 as FileInfo).MoveTo(i.Item2.ToString());
                 }
+            }
+            catch(Exception ex)
+            {
+                Alert.Call(ex.Message, Colors.Red);
                 foreach (var i in Managercs)
+                {
                     i.ViewModel.ListItems = Item.GetItems(i.CurrentDirectory);
+                }
+                return false;
+            }
+            foreach (var i in Managercs)
+            {
+                i.ViewModel.ListItems = Item.GetItems(i.CurrentDirectory);
             }
             return true;
         }

@@ -34,7 +34,7 @@
         </Style>
     </Window.Resources>
 
-    <Grid KeyDown="KeyDown">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -43,24 +43,24 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0">
-            <MenuItem Header="Файлы"/>
-            <MenuItem Header="Выделение"/>
-            <MenuItem Header="Команды"/>
-            <MenuItem Header="Сеть"/>
-            <MenuItem Header="Вид"/>
-            <MenuItem Header="Конфигурация"/>
-            <MenuItem Header="Запуск"/>
-        </Menu>
-
-        <Grid Grid.Row="1" Height="auto">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
 
+            <Menu FontSize="14">
+                <MenuItem Header="Файлы"/>
+                <MenuItem Header="Выделение"/>
+                <MenuItem Header="Команды"/>
+                <MenuItem Header="Вид"/>
+                <MenuItem Header="Запуск"/>
+            </Menu>
+
             <ItemsControl Grid.Column="1"
+                          Height="auto"
                           Name="ButtonsItemControl"
+                          Background="SeaGreen"
                           ItemsSource="{Binding PlusMinusButton}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -70,13 +70,14 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button Command="{Binding Item1}"
-                                Content="{Binding Item2}"
-                                FontSize="26"
-                                Margin="10,0,10,0"/>
+                                    Content="{Binding Item2}"
+                                    FontSize="26"
+                                    Margin="10,0,10,0"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Grid>
+        
 
         <ItemsControl Grid.Row="2"
                       Name="FileBrowserList"
@@ -106,11 +107,11 @@
                 <DataTemplate>
                     <Border>
                         <Button Command="{Binding Item1}" 
-                                Content="{Binding Item2}"/>
+                                Content="{Binding Item2}"
+                                FontSize="14"/>
                     </Border>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        
     </Grid>
 </Window>

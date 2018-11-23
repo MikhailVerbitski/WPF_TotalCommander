@@ -22,11 +22,6 @@ namespace TotalCommander
             InitializeComponent();
             DataContext = new ViewModel.MainWindowViewModel(this);
         }
-        public void KeyDown(object sender, KeyEventArgs e)
-        {
-            if ((this.DataContext as ViewModel.MainWindowViewModel).KeyDown != null)
-                (this.DataContext as ViewModel.MainWindowViewModel).KeyDown(sender, e);
-        }
 
         public void WindowSizeChange(object sender, SizeChangedEventArgs e)
         {

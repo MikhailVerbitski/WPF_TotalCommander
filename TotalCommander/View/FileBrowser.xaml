@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:TotalCommander.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400">
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -38,13 +38,25 @@
                   MouseDoubleClick="DoubleClick"
                   SelectedItem="{Binding SelectedItem}"
                   SelectionChanged="SelectionItems">
+            <ListView.ItemContainerStyle>
+                <Style>
+                    <Setter Property="TextBlock.FontSize" Value="16"/>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">Имя</GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Type}">Тип</GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Size}">Размер</GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=info.CreationTime}">Дата</GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=info.Attributes}">Атрибуты</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">
+                        <TextBlock Text="Имя" FontSize="18" FontWeight="Medium"/>
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Type}">
+                        <TextBlock Text="Тип" FontSize="18" FontWeight="Medium"/>
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Size}">
+                        <TextBlock Text="Размер" FontSize="18" FontWeight="Medium"/>
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=CreationTime}">
+                        <TextBlock Text="Дата" FontSize="18" FontWeight="Medium"/>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
