@@ -1,0 +1,116 @@
+﻿<Window x:Class="TotalCommander.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TotalCommander"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:model="clr-namespace:TotalCommander.Model"
+        mc:Ignorable="d"
+        Height="720"
+        Width="1280"
+        SizeChanged="WindowSizeChange"
+        Title="MainWindow">
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="5,0,5,0"/>
+            <Setter Property="Control.Background" Value="{x:Null}" />
+            <Setter Property="Control.BorderBrush" Value="{x:Null}" />
+            <Style.Triggers>
+                <Trigger Property="Control.IsMouseOver" Value="True">
+                    <Setter Property="Control.Background" Value="{x:Null}" />
+                    <Setter Property="Control.BorderBrush" Value="{x:Null}" />
+                    <Setter Property="Control.FontWeight" Value="Bold" />
+                </Trigger>
+                <Trigger Property="Control.IsFocused" Value="True">
+                    <Setter Property="Control.FontWeight" Value="Bold" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Border">
+            <Setter Property="BorderThickness" Value="0,0,2,0"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid KeyDown="KeyDown">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.Row="0">
+            <MenuItem Header="Файлы"/>
+            <MenuItem Header="Выделение"/>
+            <MenuItem Header="Команды"/>
+            <MenuItem Header="Сеть"/>
+            <MenuItem Header="Вид"/>
+            <MenuItem Header="Конфигурация"/>
+            <MenuItem Header="Запуск"/>
+        </Menu>
+
+        <Grid Grid.Row="1" Height="auto">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <ItemsControl Grid.Column="1"
+                          Name="ButtonsItemControl"
+                          ItemsSource="{Binding PlusMinusButton}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Command="{Binding Item1}"
+                                Content="{Binding Item2}"
+                                FontSize="26"
+                                Margin="10,0,10,0"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+
+        <ItemsControl Grid.Row="2"
+                      Name="FileBrowserList"
+                      HorizontalContentAlignment="Stretch"
+                      ItemsSource="{Binding FileBrowsers}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+
+        <TextBlock Grid.Row="3"
+                   FontSize="18"
+                   Text="{Binding NotificationText}" 
+                   Background="{Binding NotificationBackground}"/>
+
+        <ItemsControl Grid.Row="4" 
+                      ItemsSource="{Binding KeyButtons}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel HorizontalAlignment="Center"
+                                Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border>
+                        <Button Command="{Binding Item1}" 
+                                Content="{Binding Item2}"/>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        
+    </Grid>
+</Window>

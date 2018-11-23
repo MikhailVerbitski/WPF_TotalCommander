@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="TotalCommander.View.FileBrowser"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TotalCommander.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="400">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" 
+                    Background="LightGray"
+                    Grid.Row="0">
+            <ComboBox ItemsSource="{Binding ComboBoxItems}" 
+                      SelectedItem="{Binding SelectedDrive}"
+                      SelectionChanged="Selected"/>
+            <TextBlock Text="{Binding TextNearComboBox}" 
+                       VerticalAlignment="Center" 
+                       Margin="10,0,0,0"/>
+        </StackPanel>
+
+        <Border Grid.Row="1" 
+                BorderThickness="1" 
+                BorderBrush="Gray">
+            <TextBlock Text="{Binding Linq}" 
+                       Background="OrangeRed" 
+                       FontSize="15"/>
+        </Border>
+
+        <ListView Grid.Row="2"
+                  ItemsSource="{Binding ListItems}"
+                  MouseDoubleClick="DoubleClick"
+                  SelectedItem="{Binding SelectedItem}"
+                  SelectionChanged="SelectionItems">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">Имя</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Type}">Тип</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Size}">Размер</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=info.CreationTime}">Дата</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=info.Attributes}">Атрибуты</GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>
