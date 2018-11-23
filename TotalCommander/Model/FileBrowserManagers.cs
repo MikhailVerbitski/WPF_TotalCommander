@@ -104,17 +104,20 @@ namespace TotalCommander.Model
         }
         public static async void PasteAsync(object obj)
         {
-            var result = await Task.Factory.StartNew<bool>(() => Paste(obj));
+            var result = await Task.Factory.StartNew<bool>(() => Paste());
             if (result == true)
             {
                 Alert.Call("Операция завершена успешно", Colors.Green);
             }
+            else
+            {
+                Alert.Call("Ошибка", Colors.Red);
+            }
         }
-        public static bool Paste(object obj)
+        private static bool Paste()
         {
             if (SelectedFileBrowserManagers.BufSelectedItems.Count > 1 || SelectedFileBrowserManagers.BufSelectedItems.Count == 0)
             {
-                Alert.Call("Выбирите одну папку", Colors.Red);
                 return false;
             }
             DirectoryInfo destination = (SelectedFileBrowserManagers.BufSelectedItems.Count == 0) 
@@ -160,18 +163,15 @@ namespace TotalCommander.Model
                         (i.Item1 as FileInfo).MoveTo(i.Item2.ToString());
                 }
             }
-            catch(Exception ex)
+            catch {
+                return false;
+            }
+            finally
             {
-                Alert.Call(ex.Message, Colors.Red);
                 foreach (var i in Managercs)
                 {
                     i.ViewModel.ListItems = Item.GetItems(i.CurrentDirectory);
                 }
-                return false;
-            }
-            foreach (var i in Managercs)
-            {
-                i.ViewModel.ListItems = Item.GetItems(i.CurrentDirectory);
             }
             return true;
         }
