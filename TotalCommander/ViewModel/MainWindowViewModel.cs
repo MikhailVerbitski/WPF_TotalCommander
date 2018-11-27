@@ -82,6 +82,18 @@ namespace TotalCommander.ViewModel
             }
         }
         private Brush notificationBackground;
+
+        public string NumberOfProcesses
+        {
+            get { return numberOfProcesses; }
+            set
+            {
+                numberOfProcesses = value;
+                OnPropertyChanged("NumberOfProcesses");
+            }
+        }
+        private string numberOfProcesses;
+
         public Action<object, SizeChangedEventArgs> WindowSizeChange;
     }
 }

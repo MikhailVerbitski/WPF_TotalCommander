@@ -47,6 +47,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
 
             <Menu FontSize="14">
@@ -57,7 +58,11 @@
                 <MenuItem Header="Запуск"/>
             </Menu>
 
-            <ItemsControl Grid.Column="1"
+            <TextBlock Grid.Column="1"
+                       FontSize="22"
+                       Text="{Binding NumberOfProcesses}"/>
+
+            <ItemsControl Grid.Column="2"
                           Height="auto"
                           Name="ButtonsItemControl"
                           Background="SeaGreen"

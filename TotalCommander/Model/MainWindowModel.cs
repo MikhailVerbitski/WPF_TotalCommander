@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using System.Diagnostics;
+using System.Threading;
 
 namespace TotalCommander.Model
 {
@@ -35,6 +37,15 @@ namespace TotalCommander.Model
                 new Tuple<Model.Command, string>(new Command(RemoveFileBrowser), "-"),
                 new Tuple<Model.Command, string>(new Command(AddFileBrowser), "+")
             };
+            
+            Task.Factory.StartNew(() =>
+            {
+                while(true)
+                {
+                    ViewModel.NumberOfProcesses = $"Число процессов: {Process.GetCurrentProcess().Threads.Count.ToString()}";
+                    Thread.Sleep(100);
+                }
+            });
         }
         private ViewModel.MainWindowViewModel ViewModel;
 
