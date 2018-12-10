@@ -1,22 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
 
 namespace TotalCommander.Model
 {
-    class Item
+    public class Item
     {
         public FileSystemInfo info { get; set; }
         public string Size { get { return (info is FileInfo) ? AdapterNumber.ToAdaptNumber((info as FileInfo).Length) + " байт" : ""; } set { } }
@@ -24,11 +12,10 @@ namespace TotalCommander.Model
         public string Name { get { return (name == null) ? info.Name : name; } set { name = value; } }
         private string name = null;
         public string CreationTime { get { return info.CreationTime.ToShortDateString(); } set { } }
-        private Item(FileSystemInfo info)
+        public Item(FileSystemInfo info)
         {
             this.info = info;
         }
-
         public static List<Item> GetItems(DirectoryInfo directory)
         {
             return new Item[]

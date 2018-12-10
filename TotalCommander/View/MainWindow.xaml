@@ -51,7 +51,12 @@
             </Grid.ColumnDefinitions>
 
             <Menu FontSize="14">
-                <MenuItem Header="Файлы"/>
+                <MenuItem Header="Файлы" ItemsSource="{Binding MenuCopyCutPasteDelete}">
+                    <!--<MenuItem Header="Копировать"/>
+                    <MenuItem Header="Вырезать"/>
+                    <MenuItem Header="Вставить"/>
+                    <MenuItem Header="Удалить"/>-->
+                </MenuItem>
                 <MenuItem Header="Выделение"/>
                 <MenuItem Header="Команды"/>
                 <MenuItem Header="Вид"/>
@@ -99,24 +104,5 @@
                    FontSize="18"
                    Text="{Binding NotificationText}" 
                    Background="{Binding NotificationBackground}"/>
-
-        <ItemsControl Grid.Row="4" 
-                      ItemsSource="{Binding KeyButtons}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel HorizontalAlignment="Center"
-                                Orientation="Horizontal"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border>
-                        <Button Command="{Binding Item1}" 
-                                Content="{Binding Item2}"
-                                FontSize="14"/>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
     </Grid>
 </Window>

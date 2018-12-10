@@ -15,12 +15,17 @@ using System.Windows.Shapes;
 
 namespace TotalCommander.View
 {
-    public partial class FileBrowser : UserControl
+    public partial class FileBrowser : UserControl, IDisposable
     {
         public FileBrowser()
         {
             InitializeComponent();
             DataContext = new ViewModel.FileBrowserViewModel();
+
+        }
+        public void Dispose()
+        {
+            (this.DataContext as IDisposable).Dispose();
         }
 
         public void Selected(object sender, EventArgs e)
@@ -35,8 +40,7 @@ namespace TotalCommander.View
         }
         public void SelectionItems(object sender, EventArgs e)
         {
-            if ((this.DataContext as ViewModel.FileBrowserViewModel).SelectionItems != null)
-                (this.DataContext as ViewModel.FileBrowserViewModel).SelectionItems(sender, e);
+            (this.DataContext as ViewModel.FileBrowserViewModel).SelectionItems(sender, e);
         }
     }
 }

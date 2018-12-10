@@ -32,7 +32,7 @@
                        Background="OrangeRed" 
                        FontSize="15"/>
         </Border>
-
+        
         <ListView Grid.Row="2"
                   ItemsSource="{Binding ListItems}"
                   MouseDoubleClick="DoubleClick"
@@ -43,6 +43,14 @@
                     <Setter Property="TextBlock.FontSize" Value="16"/>
                 </Style>
             </ListView.ItemContainerStyle>
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Копировать" Command ="{Binding CopyCommand}"/>
+                    <MenuItem Header="Вырезать" Command ="{Binding CutCommand}"/>
+                    <MenuItem Header="Вставить" Command ="{Binding PasteCommand}"/>
+                    <MenuItem Header="Удалить" Command ="{Binding DeleteCommand}"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">

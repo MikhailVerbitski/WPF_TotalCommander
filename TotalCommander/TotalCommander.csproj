@@ -96,7 +96,6 @@
     </Compile>
     <Compile Include="Model\FileBrowserManagers.cs" />
     <Compile Include="Model\Item.cs" />
-    <Compile Include="Model\MainWindowModel.cs" />
     <Compile Include="Model\NotificationManager.cs" />
     <Compile Include="Model\NotifyPropertyChanged.cs" />
     <Compile Include="ViewModel\FileBrowserViewModel.cs" />

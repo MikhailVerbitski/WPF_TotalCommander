@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.IO;
+using TotalCommander.Model;
 
 namespace TotalCommander.ViewModel
 {
@@ -21,14 +16,48 @@ namespace TotalCommander.ViewModel
         public MainWindowViewModel(Window window)
         {
             this.window = window;
-            Model = new Model.MainWindowModel(this);
             Alert = new TotalCommander.Model.NotificationManager(this);
+
+            FileBrowsers = new List<View.FileBrowser> { new View.FileBrowser() };
+            PlusMinusButton = new Tuple<Command, string>[] {
+                new Tuple<Command, string>(new Command(RemoveFileBrowser), "-"),
+                new Tuple<Command, string>(new Command(AddFileBrowser), "+")
+                };
+
+            Task.Factory.StartNew(() =>
+            {
+                while (true)
+                {
+                    NumberOfProcesses = $"Число потоков: {Process.GetCurrentProcess().Threads.Count.ToString()}";
+                    Thread.Sleep(100);
+                }
+            });
         }
-        private Model.MainWindowModel Model;
+        public void AddFileBrowser(object sender)
+        {
+            FileBrowsers = FileBrowsers.Concat(new[] { new View.FileBrowser() }).ToList();
+
+            window.Width = window.Width + 1;
+            window.Width = window.Width - 1;
+        }
+        public void RemoveFileBrowser(object sender)
+        {
+            if (FileBrowsers.Count == 1)
+            {
+                TotalCommander.ViewModel.MainWindowViewModel.Alert.Call("Нельзя убрать последний ряд", Colors.Orange);
+                return;
+            }
+            FileBrowserViewModel.AllFileBrowserViewModel.Remove((FileBrowsers[FileBrowsers.Count - 1].DataContext as FileBrowserViewModel));
+            (FileBrowsers[FileBrowsers.Count - 1].DataContext as FileBrowserViewModel).Dispose();
+            FileBrowsers = FileBrowsers.Take(FileBrowsers.Count - 1).ToList();
+
+            window.Width = window.Width + 1;
+            window.Width = window.Width - 1;
+        }
         public Window window;
         public static Model.NotificationManager Alert { get; private set; }
 
-        public View.FileBrowser[] FileBrowsers
+        public List<View.FileBrowser> FileBrowsers
         {
             get { return fileBrowsers; }
             set
@@ -37,18 +66,7 @@ namespace TotalCommander.ViewModel
                 OnPropertyChanged("FileBrowsers");
             }
         }
-        private View.FileBrowser[] fileBrowsers;
-
-        public Tuple<Model.Command, string>[] KeyButtons
-        {
-            get { return keyButtons; }
-            set
-            {
-                keyButtons = value;
-                OnPropertyChanged("KeyButtons");
-            }
-        }
-        private Tuple<Model.Command, string>[] keyButtons;
+        private List<View.FileBrowser> fileBrowsers;
 
         public Tuple<Model.Command, string>[] PlusMinusButton
         {
@@ -93,7 +111,24 @@ namespace TotalCommander.ViewModel
             }
         }
         private string numberOfProcesses;
-
-        public Action<object, SizeChangedEventArgs> WindowSizeChange;
+        
+        public MenuItem[] MenuItemsCopyCutPasteDelete
+        {
+            get { return menuItemsCopyCutPasteDelete; }
+            set
+            {
+                menuItemsCopyCutPasteDelete = value;
+                OnPropertyChanged("MenuItemsCopyCutPasteDelete");
+            }
+        }
+        private MenuItem[] menuItemsCopyCutPasteDelete = new MenuItem[] { };
+        
+        public void WindowSizeChange(object sender, SizeChangedEventArgs e)
+        {
+            foreach (var i in FileBrowsers)
+            {
+                i.Width = (e.NewSize.Width / FileBrowsers.Count);
+            }
+        }
     }
 }

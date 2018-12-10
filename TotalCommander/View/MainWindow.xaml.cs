@@ -25,8 +25,7 @@ namespace TotalCommander
 
         public void WindowSizeChange(object sender, SizeChangedEventArgs e)
         {
-            if ((this.DataContext as ViewModel.MainWindowViewModel).WindowSizeChange != null)
-                (this.DataContext as ViewModel.MainWindowViewModel).WindowSizeChange(sender, e);
+            (this.DataContext as ViewModel.MainWindowViewModel).WindowSizeChange(sender, e);
         }
     }
 }
